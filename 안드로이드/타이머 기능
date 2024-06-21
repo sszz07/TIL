@@ -1,0 +1,48 @@
+1.지역변수
+ var mCountDownTimer: CountDownTimer? = null
+    //1000 == 1초
+    var mTimeLeftInMillis: Long = 300000
+
+2.타이머 스타트 메소드
+    private fun startTimer() {
+        //CountDownTimer 객체를 만드는 법
+        //countdowninterval-콜백을 받기까지의 시간 간격
+        //첫번째 인자의 값이 5000이면 5초이고,두번째 인자가 1000이면 1초이다
+        mCountDownTimer = object : CountDownTimer(mTimeLeftInMillis, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                mTimeLeftInMillis = millisUntilFinished
+                updateCountDownText()
+            }
+
+            override fun onFinish() {
+                Toast.makeText(
+                    this@PhoneCertificationActivity,
+                    "시간이 초과 되었습니다",
+                    Toast.LENGTH_SHORT
+                )
+                    .show()
+            }
+        }.start()
+    }
+
+3.타이머 리셋
+    private fun resetTimer() {
+        //카운터 재갱신
+        mCountDownTimer?.cancel() --> 타이머 강제종료 메소드
+        mTimeLeftInMillis = 300000
+        startTimer()
+    }
+
+4.타이머 text를 뷰에 넣는 메소드
+    private fun updateCountDownText() {
+        val tvPhoneCertificationCountdown =
+            findViewById<TextView>(R.id.tv_phone_certification_countdown)
+        val minutes: Int = (mTimeLeftInMillis / 1000).toInt() / 60
+        val seconds: Int = (mTimeLeftInMillis / 1000).toInt() % 60
+        val timeLeftFormatted =
+            String.format(Locale.getDefault(), "(%02d:%02d)", minutes, seconds)
+
+        //타이머 값을 보여주게 한다
+        tvPhoneCertificationCountdown.setText(timeLeftFormatted)
+    }
+
